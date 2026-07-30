@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Drone {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  category  String
+  brand     String
+  price     Float
+  oldPrice  Float?
+  rating    Float
+  reviews   Int
+  inStock   Boolean
+  image     String
+  tagline   String
+  badge     String?
+  features  String   // JSON stringified array of strings
+  specs     String   // JSON stringified array of {label, value}
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  desc      String
+  image     String
+  video     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Portfolio {
+  id        String   @id @default(cuid())
+  title     String
+  category  String
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Hero {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String
+  videoUrl    String
+  posterImage String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String   // Hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  type      String   // 'repair' | 'quote' | 'contact'
+  name      String
+  email     String
+  phone     String
+  date      String?  
+  topic     String?  
+  details   String?
+  status    String   @default("pending") // 'pending', 'contacted', 'resolved'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

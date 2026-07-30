@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -40,46 +40,53 @@ export default function AdminLoginPage() {
   }
 
   return (
+    <form onSubmit={handleLogin} className="space-y-6">
+      {error && (
+        <div className="rounded-lg bg-red-500/10 p-3 text-center text-sm font-medium text-red-500">
+          {error}
+        </div>
+      )}
+
+      <div>
+        <label className="mb-2 block text-sm font-medium text-foreground">Username</label>
+        <input
+          type="text"
+          required
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+      </div>
+
+      <div>
+        <label className="mb-2 block text-sm font-medium text-foreground">Password</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+      </div>
+
+      <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">
+        {loading ? 'Signing in...' : 'Sign in'}
+      </Button>
+    </form>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
         <div className="mb-8 text-center">
           <h1 className="font-display text-2xl font-bold">Admin Login</h1>
           <p className="mt-2 text-sm text-muted-foreground">Sign in to manage Skyloom Drones</p>
         </div>
-
-        <form onSubmit={handleLogin} className="space-y-6">
-          {error && (
-            <div className="rounded-lg bg-red-500/10 p-3 text-center text-sm font-medium text-red-500">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Username</label>
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-          </div>
-
-          <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center justify-center">
-            {loading ? 'Signing in...' : 'Sign in'}
-          </Button>
-        </form>
+        <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading form...</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   )
